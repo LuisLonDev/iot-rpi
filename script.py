@@ -9,9 +9,9 @@ AWS_ENDPOINT = 'your-aws-endpoint.iot.your-region.amazonaws.com'
 MQTT_TOPIC = 'iot/dataIngestion'
 
 # Paths to your certificate files
-CERT_FILE = '/path/to/your/new-certificate.pem.crt'
-KEY_FILE = '/path/to/your/new-private.pem.key'
-ROOT_CA = '/path/to/AmazonRootCA1.pem'
+CERT_FILE = '/home/admin/Documents/iot-rpi/new-certificate.pem.crt'
+KEY_FILE = '/home/admin/Documents/iot-rpi/new-private.pem.key'
+ROOT_CA = '/home/admin/Documents/iot-rpi/AmazonRootCA1.pem'
 
 # Define gas concentration thresholds (in ppm)
 CO_THRESHOLD = 9    # CO threshold as per WHO/EPA guidelines (8-hour average)
@@ -35,8 +35,11 @@ def on_connect(client, userdata, flags, rc):
     else:
         print(f"Failed to connect, return code {rc}")
 
+def on_publish(client, userdata, mid):
+    print("Message published with mid: ", mid)
+
 # Create MQTT client and set up TLS
-client = mqtt.Client()
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.tls_set(ca_certs=ROOT_CA,
                certfile=CERT_FILE,
